@@ -1,0 +1,16 @@
+{
+    "name": "cline/contacts-manager",
+    "description": "A contacts manager",
+    "authors": [
+        {
+            "name": "Céline Foucart",
+            "email": "celinefoucart@yahoo.fr"
+        }
+    ],
+    "autoload": {
+    	"psr-4" : {
+    		"App\\": "src/"
+    	}
+    },
+    "require": {}
+}
