@@ -9,3 +9,15 @@ body, html {
 	max-width: 1180px;
 	margin: 0 auto;
 }
+
+.italic {
+	font-style: italic;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.underline {
+	text-decoration: underline;
+}
