@@ -12,5 +12,14 @@
     		"App\\": "src/"
     	}
     },
-    "require": {}
+    "require": {
+        "guzzlehttp/psr7": "^2.0",
+        "http-interop/response-sender": "^1.0",
+        "altorouter/altorouter": "^2.0"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^5.3",
+        "filp/whoops": "^2.14",
+        "phpunit/phpunit": "^9.5"
+    }
 }
