@@ -10,7 +10,8 @@ class PublicController extends Controller
 
     public function index(ServerRequestInterface $request)
     {
-        return $this->render('home', []);
+        $title = WEBSITE_NAME . " | Gestion de mes contacts";
+        return $this->render('home', compact('title'));
     }
 
 }
