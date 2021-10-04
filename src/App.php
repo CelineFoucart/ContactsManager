@@ -13,13 +13,23 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class App
 {
+    /**
+     * @var array Valids urls
+     */
     private array $urls = [];
+    /**
+     * @var Router
+     */
     private Router $router;
-    private string $controllerNamespace = "\\App\\Controllers\\";
+    /**
+     * @var string controllers namspace
+     */
+    private string $controllerNamespace;
     
-    public function __construct(array $urls)
+    public function __construct(array $urls, string $namespace = "\\App\\Controllers\\")
     {
         $this->urls = $urls;
+        $this->controllerNamespace = $namespace;
         $this->makeRouter();
     }
 

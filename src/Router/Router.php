@@ -14,7 +14,7 @@ class Router
 
     private string $namespace;
     
-    public function __construct(string $namespace = "\\App\\Controller\\")
+    public function __construct(string $namespace = "\\App\\Controllers\\")
     {
         $this->router = new \AltoRouter();
         $this->namespace = $namespace;
@@ -61,7 +61,7 @@ class Router
 
     public function run(ServerRequestInterface $request): string
     {
-        $match = $this->router->match();
+        $match = $this->router->match($request->getUri()->getPath());
         $router = $this;
         if ($match === false) {
             throw new RouterException("Cette url n'est pas valide");
