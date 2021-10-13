@@ -15,6 +15,9 @@ abstract class Controller
     public function __construct(Router $router)
     {
         $this->router = $router;
+        if(!defined('WEBSITE_NAME')) {
+            define('WEBSITE_NAME', 'MyWebsite');
+        }
     }
     
     protected function render(string $view, array $params = []): string

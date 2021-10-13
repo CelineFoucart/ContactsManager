@@ -1,13 +1,13 @@
 <?php 
 
-define('DOMAINE', 'ContactsManager');
+define('HOME_PATH', '/ContactsManager/');
 
 return [
-    ['get', '/' . DOMAINE . '/', 'Public#index', 'home'],
-    ['match', '/' . DOMAINE . '/Connexion', 'User#login', 'login'],
-    ['match', '/' . DOMAINE . '/Inscription', 'User#register', 'register'],
-    ['get', '/' . DOMAINE . '/Profil', 'User#profil', 'profil'],
-    ['get', '/' . DOMAINE . '/Contacts/[i:id]', 'Contact#show', 'contactPage'],
-    ['match', '/' . DOMAINE . '/Contactez-nous', 'Public#contact', 'contact'],
-    ['get', '/' . DOMAINE . '/A-propos', 'Public#about', 'about']
+    ['get',  HOME_PATH, 'Public#index', 'home'],
+    ['match', HOME_PATH . 'Connexion', 'User#login', 'login'],
+    ['match', HOME_PATH . 'Inscription', 'User#register', 'register'],
+    ['get', HOME_PATH . 'Profil', 'User#profil', 'profil'],
+    ['get', HOME_PATH . 'Contacts/[i:id]', 'Contact#show', 'contactPage'],
+    ['match', HOME_PATH . 'Contactez-nous', 'Public#contact', 'contact'],
+    ['get', HOME_PATH . 'A-propos', 'Public#about', 'about']
 ];
