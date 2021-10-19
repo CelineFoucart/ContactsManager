@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\Exception\ConfigException;
+use App\Tools\Form;
+use App\Tools\Validator;
 use Psr\Http\Message\ServerRequestInterface;
 
 class PublicController extends Controller
@@ -33,12 +35,27 @@ class PublicController extends Controller
         if(!defined('ADMIN_MAIL')) {
             throw new ConfigException('The constant ADMIN_MAIL is not defined!');
         }
-        // créer class form
-        // générer le formulaire
-        // class send mail
-        // vérification données
-        // envoi du message ou affichage message d'erreur
-        return "Page de contact";
+
+        $errors = [];
+        $data = [];
+        if($request->getMethod() === 'POST') {
+            $data = $request->getParsedBody();
+            $validator = new Validator($data);
+            $validator->required("name","mail","subject","content")
+                ->length("name",2)
+                ->length("subject", 5)
+                ->length("content", 15)
+                ->email('mail');
+            if($validator->valid()) {
+                // class send mail
+                // envoi du message
+            } else {
+                $errors = $validator->getErrors();
+                // affichage message d'erreur
+            }
+        }
+        $form = new Form($errors, $data);      
+        return $this->render('contact', compact('title', 'form'));
     }
 
     /**
