@@ -9,6 +9,10 @@ body, html {
     height: 100%;
 }
 
+.text-center {
+    text-align: center;
+}
+
 .italic {
 	font-style: italic;
 }
@@ -19,6 +23,15 @@ body, html {
 
 .underline {
 	text-decoration: underline;
+}
+
+a {
+    color: #0d6efd;
+    transition: all .3s;
+}
+
+a:hover {
+    color: #0047b3;
 }
 
 /* CONTAINERS AND WRAPPERS
@@ -156,7 +169,7 @@ body, html {
     margin: 25px auto 10px;
 }
 
-.card {
+.card, .block {
     background-color: #cccccc42;
     border: 1px solid rgb(212, 211, 211);
     height: 100%;
@@ -167,7 +180,7 @@ body, html {
     margin: 10px auto;
 }
 
-.card h2, .card h3 {
+.card h2, .block h2, .card h3, .block h3 {
     margin-top: 0;
     border-bottom: 1px solid rgb(212, 211, 211);
     padding-bottom: 20px;
@@ -177,7 +190,7 @@ body, html {
     font-size: 20px;
 }
 
-.card p {
+.card p, .block p {
     line-height: 1.8;
 }
 

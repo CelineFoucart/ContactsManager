@@ -3,7 +3,9 @@
 namespace App\Controllers;
 
 use App\Exception\ConfigException;
+use App\Session\SessionFactory;
 use App\Tools\Form;
+use App\Tools\SendMail;
 use App\Tools\Validator;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -38,6 +40,7 @@ class PublicController extends Controller
 
         $errors = [];
         $data = [];
+        $flash = SessionFactory::getFlash();
         if($request->getMethod() === 'POST') {
             $data = $request->getParsedBody();
             $validator = new Validator($data);
@@ -47,15 +50,22 @@ class PublicController extends Controller
                 ->length("content", 15)
                 ->email('mail');
             if($validator->valid()) {
-                // class send mail
-                // envoi du message
+                $mail = [
+                    'name' => htmlspecialchars($data['name']),
+                    'mail' => htmlspecialchars($data['mail']),
+                    'subject' => htmlspecialchars($data['subject']),
+                    'content' => htmlspecialchars($data['content'])
+                ];
+                $sendMail = new SendMail($mail);
+                $sendMail->from("name", "mail")->to(ADMIN_MAIL)->subject("subject")->body("content")->send();
+                $flash->success("Le message a bien été envoyé.");
             } else {
                 $errors = $validator->getErrors();
-                // affichage message d'erreur
+                $flash->error("Le message n'a pas pu être envoyé.");
             }
         }
         $form = new Form($errors, $data);      
-        return $this->render('contact', compact('title', 'form'));
+        return $this->render('contact', compact('title', 'form', 'flash'));
     }
 
     /**

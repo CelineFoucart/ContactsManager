@@ -55,6 +55,16 @@ class App
     }
 
     /**
+     * Get an array of database connection configurations
+     * 
+     * @return array
+     */
+    public static function getDbConfigs(): array
+    {
+        return DB_SETTINGS;
+    }
+
+    /**
      * Hydrate le router et génère les urls valides
      * 
      * @return self

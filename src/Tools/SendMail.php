@@ -6,9 +6,10 @@ class SendMail {
 
     private array $data = [];
     private array $errors = [];
-    private ?string $header;
-    private ?string $to;
-    private ?string $body;
+    private ?string $header = null;
+    private ?string $subject = null;
+    private ?string $to = null;
+    private ?string $body = null;
 
     public function __construct(array $data)
     {
@@ -90,19 +91,31 @@ class SendMail {
             return $this;
         }
 
-        $this->body = '<html><head></head><body>' . nl2br($this->data[$key]) . '</body></html>';
+        $this->body = '<html><head></head><body>' . nl2br(htmlspecialchars($this->data[$key])) . '</body></html>';
+        return $this;
+    }
+
+    /**
+     * Hydrate the subject
+     * 
+     * @param string $subject
+     * @return self
+     */
+    public function subject(string $key): self
+    {
+        $subject = empty($this->data[$key]) ? null : $this->data[$key];
+        $this->setSubject($subject);
         return $this;
     }
     
     /**
      * Send the e-mail
      *
-     * @param  mixed $subject
      * @return bool
      */
-    public function send(string $subject = ""): bool
+    public function send(): bool
     {
-       return mail($this->to, $subject, $this->body, $this->header); 
+        return mail($this->getTo(), $this->getSubject(), $this->getBody(), $this->getHeader()); 
     }
     
     /**
@@ -113,5 +126,59 @@ class SendMail {
     public function getErrors(): array
     {
         return $this->errors;
+    }
+
+    /**
+     * Get the value of header
+     */ 
+    public function getHeader(): string
+    {
+        if ($this->header === null) {
+            throw new \Exception("The header cannot be empty!");
+        }
+        return $this->header;
+    }
+
+    /**
+     * Get the value of subject
+     */ 
+    public function getSubject(): string
+    {
+        if($this->subject === null) {
+            $this->setSubject();
+        }
+        return $this->subject;
+    }
+
+    /**
+     * Get the value of to
+     */ 
+    public function getTo(): string
+    {
+        if (!$this->isMail($this->to)) {
+            throw new \Exception("{$this->to} is not a valid email!");
+        }
+        return $this->to;
+    }
+
+    /**
+     * Get the value of body
+     */ 
+    public function getBody(): string
+    {
+        if($this->body === null || mb_strlen($this->body) === 0) {
+            throw new \Exception("The body cannot be empty!");
+        }
+        return $this->body;
+    }
+
+    private function setSubject(?string $subject = null): self
+    {
+        if ($subject === null || mb_strlen($subject) === 0) {
+            $this->subject = "You have received a message from your website";
+        } else {
+            $this->subject = $subject;
+        }
+        return $this;
     }
 }
