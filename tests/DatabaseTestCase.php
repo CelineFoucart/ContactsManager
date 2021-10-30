@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Database\helpers;
+namespace Tests;
 
 use \PDO;
 use PHPUnit\Framework\TestCase;

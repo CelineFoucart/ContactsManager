@@ -4,7 +4,7 @@ namespace Tests\Database;
 
 use App\Model\Manager\UserManager;
 use App\Entity\UserEntity;
-use Tests\Database\helpers\DatabaseTestCase;
+use Tests\DatabaseTestCase;
 
 class UserManagerTest extends DatabaseTestCase
 {

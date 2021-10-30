@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Model\Manager\Manager;
 use App\Tools\Validator;
 use PHPUnit\Framework\TestCase;
 
@@ -45,6 +46,25 @@ class ValidatorTest extends TestCase
         $this->assertFalse($this->validator->valid());
         $this->assertArrayHasKey('loremipsum', $errors);
         $this->assertArrayHasKey('invalidConfirm', $errors);
+    }
+
+    public function testUniqueValid()
+    {
+        $manager = $this->getMockBuilder(Manager::class)->disableOriginalConstructor()->getMock();
+        $manager->method('count')->willReturn(0);
+        $this->validator->unique('name', 'username', $manager);
+        $errors = $this->validator->getErrors();
+        $this->assertTrue(empty($errors));
+    }
+
+    public function testUniqueInValid()
+    {
+        $manager = $this->getMockBuilder(Manager::class)->disableOriginalConstructor()->getMock();
+        $manager->method('count')->willReturn(1);
+        $this->validator->unique('name', 'username', $manager);
+        $errors = $this->validator->getErrors();
+        $this->assertTrue(!empty($errors));
+        assert:$this->assertArrayHasKey('name', $errors);
     }
     
 }

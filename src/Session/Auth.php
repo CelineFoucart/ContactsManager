@@ -15,13 +15,13 @@ class Auth
     /**
      * Hydrate $session
      *
-     * @param  mixed $id
-     * @param  mixed $auth
+     * @param  int   $id
+     * @param  bool  $admin
      * @return self
      */
-    public function session(int $id, int $auth): self
+    public function session(int $id, bool $admin): self
     {
-        $this->session->set('id', $id)->set('auth', $auth);
+        $this->session->set('id', $id)->set('auth', $admin);
         return $this;
     }
     
@@ -57,7 +57,7 @@ class Auth
         if(!$this->session->exists('auth')) {
             return false;
         }
-        return $this->session->get('auth') === 1;
+        return $this->session->get('auth');
     }
     
     /**

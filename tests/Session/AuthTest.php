@@ -17,21 +17,21 @@ class AuthTest extends TestCase
 
     public function testSession()
     {
-        $this->auth->session(1, 2);
+        $this->auth->session(1, false);
         $this->assertEquals(1, $this->auth->getSession()->get('id'));
-        $this->assertEquals(2, $this->auth->getSession()->get('auth'));
+        $this->assertFalse($this->auth->getSession()->get('auth'));
     }
 
     public function testLoggedTrue()
     {
-        $this->auth->session(1, 2);
+        $this->auth->session(1, false);
         $this->assertTrue($this->auth->logged());
         $this->assertEquals(1, $this->auth->getUserId());
     }
 
     public function testLogout()
     {
-        $this->auth->session(1, 2);
+        $this->auth->session(1, false);
         $this->assertTrue($this->auth->logged());
         $this->auth->logout();
         $this->assertFalse($this->auth->logged());
@@ -40,13 +40,13 @@ class AuthTest extends TestCase
 
     public function testIsAdmin()
     {
-        $this->auth->session(1, 1);
+        $this->auth->session(1, true);
         $this->assertTrue($this->auth->isAdmin());
     }
 
     public function testIsAdminFalse()
     {
-        $this->auth->session(1, 2);
+        $this->auth->session(1, false);
         $this->assertFalse($this->auth->isAdmin());
     }
     

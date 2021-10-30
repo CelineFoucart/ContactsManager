@@ -2,6 +2,8 @@
 
 namespace App\Tools;
 
+use App\Model\Manager\Manager;
+
 class Validator
 {
     protected array $data = [];
@@ -100,6 +102,26 @@ class Validator
             }
             return $this;
         }
+    }
+
+    /**
+     * @param string  $key
+     * @param string  $column
+     * @param Manager $manager
+     * 
+     * @return self
+     */
+    public function unique(string $key, string $column, Manager $manager): self
+    {
+        if (!$this->exist($key)) {
+            $this->errors[$key][] = "Ce champ n'existe pas !";
+            return $this;
+        }
+        $count = $manager->count("$column = ?", [$this->data[$key]]);
+        if($count !== 0) {
+            $this->errors[$key][] = "Ce champ doit être unique";
+        }
+        return $this;
     }
 
     /**
