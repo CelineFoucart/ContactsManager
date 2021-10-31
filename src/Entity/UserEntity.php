@@ -49,7 +49,7 @@ class UserEntity extends Entity
      */ 
     public function getUsername(): ?string
     {
-        return $this->username;
+        return htmlspecialchars($this->username);
     }
 
     /**
@@ -69,7 +69,7 @@ class UserEntity extends Entity
      */ 
     public function getEmail(): ?string
     {
-        return $this->email;
+        return htmlspecialchars($this->email);
     }
 
     /**

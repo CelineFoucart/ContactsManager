@@ -13,6 +13,10 @@ body, html {
     text-align: center;
 }
 
+.text-right {
+    text-align: right;
+}
+
 .italic {
 	font-style: italic;
 }

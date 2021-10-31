@@ -35,11 +35,25 @@ class UserCrudActionTest extends DatabaseTestCase
         $this->assertEmpty($errors);
     }
 
-    public function testLoginInvalid()
+    public function testLoginInvalidPassword()
     {
         $data = [
             'username' => 'Admin',
             'password' => 'aze'
+        ];
+        $validator = new Validator($data);
+        $crud = new UserCrudAction($this->userManager, $this->flash, $validator);
+        $id = $crud->login($data);
+        $errors = $crud->getValidator()->getErrors();
+        $this->assertNull($id);
+        $this->assertEmpty($errors);
+    }
+
+    public function testLoginInvalidUsername()
+    {
+        $data = [
+            'username' => 'aze',
+            'password' => 'admin'
         ];
         $validator = new Validator($data);
         $crud = new UserCrudAction($this->userManager, $this->flash, $validator);

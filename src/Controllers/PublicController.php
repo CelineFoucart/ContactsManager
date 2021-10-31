@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Exception\ConfigException;
+use App\Exceptions\ConfigException;
 use App\Session\SessionFactory;
 use App\Tools\Form;
 use App\Tools\SendMail;

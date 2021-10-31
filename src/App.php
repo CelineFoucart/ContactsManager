@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Exception\NotLoggedException;
+use App\Exceptions\NotLoggedException;
+use App\Responses\RedirectResponse;
 use App\Router\Router;
-use App\Router\RouterException;
+use App\Session\SessionFactory;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -41,6 +42,7 @@ class App
      */
     public function run(ServerRequestInterface $request): ResponseInterface
     {
+        $flash = SessionFactory::getFlash();
         try {
             $response = $this->router->run($request);
             if ($response instanceof ResponseInterface) {
@@ -48,8 +50,9 @@ class App
             }
             return new Response(200, [], $response);
         } catch (NotLoggedException $error) {
-            return new Response(301, [], $error->getMessage());
-        } catch(RouterException $error) {
+            $this->flash->error("Vous devez être connecté pour accéder à cette page !");
+            return new RedirectResponse($this->router->url("login"));
+        } catch(\Exception $error) {
             return new Response(404, [], $error->getMessage());
         }
     }
