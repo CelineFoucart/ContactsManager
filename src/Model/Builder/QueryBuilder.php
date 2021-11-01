@@ -81,6 +81,17 @@ class QueryBuilder
     }
 
     /**
+     * Unset order by
+     * 
+     * @return self
+     */
+    public function unsetOrderBy(): self
+    {
+        $this->columnsOrder = [];
+        return $this;
+    }
+
+    /**
      * Define the value of $columnsOrder
      * 
      * @param string      $columnOrder

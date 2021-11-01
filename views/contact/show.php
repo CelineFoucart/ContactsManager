@@ -6,6 +6,30 @@
     <?php if ($flash->get('error')) : ?>
         <div class="alert-danger"><?= $flash->get('error') ?></div>
     <?php endif ?>
-    <!-- infos du contact -->
-    <!-- liens éditer et supprimer -->
+    <table class="default_table">
+        <thead>
+            <tr>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Numéro</th>
+                <th>Adresse</th>
+                <th>Pays</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><?= $contact->firstname ?></td>
+                <td><?= $contact->lastname ?></td>
+                <td><?= $contact->email ?></td>
+                <td><?= $contact->numberPhone ?></td>
+                <td><?= $contact->address ?><br /><?= $contact->city ?></td>
+                <td><?= $contact->country ?></td>
+            </tr>
+        </tbody>
+    </table>
+    <nav class="text-center">
+        <a href="<?= $router->url('contactEdit', ['id' => $contact->id]) ?>" class="btn btn-success">Editer</a>
+        <a href="<?= $router->url('contactDelete', ['id' => $contact->id]) ?>" class="btn btn-danger">Supprimer</a>
+    </nav>
 </article>

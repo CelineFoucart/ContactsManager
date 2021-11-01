@@ -39,14 +39,35 @@ class Manager
         return $this->makeBuilder()->fetchAll($sql);
     }
 
-    public function findPaginated(?string $orderBy = null, int $limit = 30, int $offset = 0): array
+    /**
+     * @param string|null $orderBy
+     * @param int         $limit
+     * @param int         $offset
+     * @param string|null $where
+     * @param array       $params
+     * 
+     * @return array
+     */
+    public function findPaginated(
+        ?string $orderBy = null,
+        int $limit = 30, 
+        int $offset = 0, 
+        ?string $where = null, 
+        array $params = []
+    ): array
     {
         $sql = $this->getPublicQuery()->limit($limit)->offset($offset);
         if($orderBy !== null) {
-            $sql = $sql->orderBy($orderBy);
+            $sql = $sql->unsetOrderBy()->orderBy($orderBy);
         }
-        $sql = $sql->toSQL();
-        return $this->findAll($sql);
+        if($where !== null) {
+            $sql->where($where);
+            $sql = $sql->toSQL();
+            return $this->find($sql, $params);
+        } else {
+            $sql = $sql->toSQL();
+            return $this->findAll($sql);
+        }
     }
 
     /**

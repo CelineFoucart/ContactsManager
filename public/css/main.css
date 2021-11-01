@@ -218,6 +218,67 @@ a:hover {
     margin: 20px 0;
 }
 
+/* PAGINATION STYLES
+---------------------------------------- */
+.paging-block {
+    padding: 10px;
+	margin: 20px 0 10px;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    padding: 10px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.action_link {
+    color: rgb(42,95,156);
+    text-decoration: none;
+}
+
+.action_link:hover {
+   color: rgb(23, 70, 124); 
+}
+
+/* TABLE STYLES
+---------------------------------------- */
+.default_table {
+	clear: both;
+	vertical-align: top;
+    border-color: #dee2e6;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+
+.default_table th {
+	border-bottom: 2px solid #212529;
+	font-weight: bold;
+	text-align: center;
+    font-size: 1.05rem;
+}
+
+.default_table td {
+	border-bottom: 1px solid rgb(215 216 218);
+	vertical-align: middle;
+	padding: 10px 5px;
+	text-align: center;
+}
+
+td.actions .btn {
+	margin-bottom: 5px;
+}
+
+.default_table tr td:first-child, td.actions {
+	background-color: rgba(215, 216, 218, 0.5);
+}
+
+
 /* FOOTER
 ---------------------------------------- */
 .main_footer {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Tests\Tools;
 
 use App\Model\Manager\Manager;
 use App\Tools\Validator;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Tests\Tools;
 
 use App\Tools\SendMail;
 use PHPUnit\Framework\TestCase;

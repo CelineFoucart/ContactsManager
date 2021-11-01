@@ -1,28 +1,48 @@
 <?php
 
-namespace Core\Tools;
+namespace App\Tools;
+
+use \PDO;
 
 class Paging {
 
-    private int $current;
-    private int $totalPage;
-    private int $numberItems;
+    private ?int $current = null;
+    private ?int $totalPage = null;
+    private ?int $numberItems = null;
     private ?string $error = null;
-    private $pdo;
-    private int $perPage;
+    private int $perPage = 3;
 
-    public function __construct(int $current, string $table, $pdo, int $perPage = 3)
-    {
-        $this->pdo = $pdo;
-        $this->perPage = $perPage;
-        $this->numberItems = $this->count($table);       
-        $this->totalPage = ceil($this->numberItems / $this->perPage);
-        $this->current = $this->setCurrent((int)$current);
+    public function __construct(?int $perPage = null, ?int $count = null, ?int $current = null)
+    {            
+        if($perPage !== null) {
+            $this->perPage($perPage);
+        }
+        if($count !== null) {
+            $this->total($count);
+        }
+        if($perPage !== null && $count !== null && $current !== null) {
+            $this->definePagination($current);
+        }
     }
 
-    public function count(string $table): int
+    public function perPage(int $perPage = 3): self
     {
-        return $this->pdo->query("SELECT COUNT(*) FROM {$table}")->fetch(\PDO::FETCH_NUM)[0];
+        $this->perPage = $perPage;
+        return $this;
+    }
+
+    public function total(int $count): self
+    {
+        $this->numberItems = $count;
+        $this->setTotal();
+        return $this;
+    }
+
+    public function countTotal(string $table, PDO $pdo): self
+    {
+        $this->numberItems = $pdo->query("SELECT COUNT(*) FROM {$table}")->fetch(\PDO::FETCH_NUM)[0];
+        $this->setTotal();
+        return $this;
     }
 
     /**
@@ -31,36 +51,17 @@ class Paging {
      * @param mixed $current
      * @return int
      */
-    private function setCurrent($current): int 
+    public function definePagination(int $current = 1): self
     {
-        if($current <= 0) {
-            return 1;
-        } elseif($current > $this->totalPage) {
+        if ($current <= 0) {
+            $this->current = 1;
+        } elseif ($current > $this->totalPage) {
             $this->error = "Numéro de page non valide";
-            return $this->totalPage;
+            $this->current = $this->totalPage;
         } else {
-            return $current;
+            $this->current = $current;
         }
-    }
-
-    /**
-     * Get errors of null
-     * 
-     * @return string|null
-     */
-    public function getError(): ?string
-    {
-        return $this->error;
-    }
-
-    /**
-     * Get offset
-     * 
-     * @return int
-     */
-    public function getOffset(): int
-    {  
-        return $this->perPage * ($this->current - 1);
+        return $this;
     }
 
     /**
@@ -69,8 +70,9 @@ class Paging {
      * 
      * @return string|null
      */
-    public function previousLink(string $link, array $params = []): ?string
+    public function previousLink(string $link, array $params = [], string $className = "action_link"): ?string
     {
+        $this->throwError();
         $currentPage = $this->current;
         if ($currentPage <= 1) {
             return null;
@@ -78,7 +80,7 @@ class Paging {
         $params['page'] = $currentPage - 1;
         $link .= '?' . http_build_query($params);
         return <<<HTML
-        <a href="{$link}">&laquo; Précédente</a>
+        <a href="{$link}" class="{$className}">&laquo; Précédente</a>
 HTML;
     }
 
@@ -88,8 +90,9 @@ HTML;
      * 
      * @return string|null
      */
-    public function nextLink(string $link, array $params = []): ?string
+    public function nextLink(string $link, array $params = [], string $className= "action_link"): ?string
     {
+        $this->throwError();
         $currentPage = $this->current;
         if ($currentPage >= $this->totalPage) {
             return null;
@@ -98,7 +101,7 @@ HTML;
         $link .= '?' . http_build_query($params);
 
         return <<<HTML
-        <a href="{$link}">Suivant &raquo;</a>
+        <a href="{$link}" class="{$className}">Suivant &raquo;</a>
 HTML;
     }
 
@@ -109,8 +112,9 @@ HTML;
      * @param array $params
      * @return array
      */
-    public function getPages(string $link, array $params = []): array
+    public function getPages(string $link, array $params = [], string $className = "action_link"): array
     {
+        $this->throwError();
         $total = $this->totalPage;
         $current = $this->current;
         if ($current > $total) {
@@ -135,10 +139,21 @@ HTML;
                 $params['page'] = $page;
                 $pageLink = $link;
                 $pageLink .= '?' . http_build_query($params);
-                $pages[] = "<a href=\"{$pageLink}\">{$page}</a>";
+                $pages[] = "<a href=\"{$pageLink}\" class=\"{$className}\">{$page}</a>";
             }
         }
-        return $pages;        
+        return $pages;
+    }
+
+    /**
+     * Get offset
+     * 
+     * @return int
+     */
+    public function getOffset(): int
+    {
+        $this->throwError();
+        return $this->perPage * ($this->current - 1);
     }
 
     /**
@@ -150,15 +165,32 @@ HTML;
     }
 
     /**
-     * Set the value of numberItems
-     *
-     * @return  self
+     * Get the value of numberItems
      */ 
-    public function setNumberItems(int $numberItems)
+    public function getNumberItems(): int
     {
-        $this->numberItems = $numberItems;
-        $this->totalPage = ceil($this->numberItems / $this->perPage);
+        return $this->numberItems;
+    }
 
-        return $this;
+    /**
+     * Get errors of null
+     * 
+     * @return string|null
+     */
+    public function getError(): ?string
+    {
+        return $this->error;
+    }
+
+    private function setTotal(): void
+    {
+        $this->totalPage = ceil($this->numberItems / $this->perPage);
+    }
+
+    private function throwError(): void
+    {
+        if ($this->totalPage === null || $this->current === null) {
+            throw new \Exception('La pagination n\'est pas définie !');
+        }
     }
 }

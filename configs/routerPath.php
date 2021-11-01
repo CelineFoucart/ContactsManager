@@ -8,6 +8,7 @@ return [
     ['match', HOME_PATH . 'Inscription', 'User#register', 'register'],
     ['get', HOME_PATH . 'Profil', 'User#profil', 'profil'],
     ['get', HOME_PATH . 'Contacts', 'Contact#list', 'contactList'],
+    ['get', HOME_PATH . 'Contacts/Ajouter', 'Contact#create', 'contactCreate'],
     ['get', HOME_PATH . 'Contacts/[i:id]', 'Contact#show', 'contactShow'],
     ['match', HOME_PATH . 'Contacts/[i:id]/Editer', 'Contact#edit', 'contactEdit'],
     ['match', HOME_PATH . 'Contacts/[i:id]/Supprimer', 'Contact#delete', 'contactDelete'],
