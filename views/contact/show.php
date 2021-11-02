@@ -29,7 +29,7 @@
         </tbody>
     </table>
     <nav class="text-center">
-        <a href="<?= $router->url('contactEdit', ['id' => $contact->id]) ?>" class="btn btn-success">Editer</a>
-        <a href="<?= $router->url('contactDelete', ['id' => $contact->id]) ?>" class="btn btn-danger">Supprimer</a>
+        <a href="<?= $router->url('contact.edit', ['id' => $contact->id]) ?>" class="btn btn-success">Editer</a>
+        <a href="<?= $router->url('contact.delete', ['id' => $contact->id]) ?>" class="btn btn-danger">Supprimer</a>
     </nav>
 </article>

@@ -35,10 +35,15 @@
         <footer class="main_footer">
             <h5><strong class="logo_name"><?= WEBSITE_NAME ?></strong></h5>
             <p class="footer_links">
-                <a href="<?= $router->url('contact') ?>">Contactez-nous</a> | 
+                <a href="<?= $router->url('contact') ?>">Contactez-nous</a> |
                 <a href="<?= $router->url('about') ?>">A propos</a>
             </p>
             <small>Copyright © 2020. Tous droits réservés.<br /> © Celine Foucart</small>
+            <?php if (App\Session\SessionFactory::getAuth()->isAdmin()) : ?>
+                <small class="admin_panel">
+                    <a href="<?= $router->url('admin.index') ?>">Accéder au panneau d'administration</a>
+                </small>
+            <?php endif; ?>
         </footer>
     </div>
 </body>

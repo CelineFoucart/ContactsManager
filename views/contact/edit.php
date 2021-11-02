@@ -5,6 +5,7 @@
     <?php endif ?>
 
     <form action="" method="post">
+        <input type="hidden" name="_csrf" value="<?= $token ?>">
         <?= $form->input("firstname", "Prénom du contact", ['placeholder' => 'Prénom']) ?>
         <?= $form->input("lastname", "Nom du contact", ['placeholder' => 'Nom']) ?>
         <?= $form->input("email", "Email du contact", ['placeholder' => 'Email', 'type' => 'email']) ?>

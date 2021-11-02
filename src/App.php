@@ -8,6 +8,7 @@ use App\Exceptions\NotLoggedException;
 use App\Responses\RedirectResponse;
 use App\Router\Router;
 use App\Session\SessionFactory;
+use App\Tools\Csrf\CsrfInvalidException;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -52,6 +53,8 @@ class App
         } catch (NotLoggedException $error) {
             $this->flash->error("Vous devez être connecté pour accéder à cette page !");
             return new RedirectResponse($this->router->url("login"));
+        } catch(CsrfInvalidException $error) {
+            return new Response(404, [], $error->getMessage());
         } catch(\Exception $error) {
             return new Response(404, [], $error->getMessage());
         }

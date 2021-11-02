@@ -1,6 +1,9 @@
 <article class="main_wrapper">
     <h2 class="home_title">Liste de vos contacts</h2>
-    <p class="text-right"><a href="<?= $router->url("contactCreate") ?>" class="btn btn-success">Ajouter</a></p>
+    <p class="text-right"><a href="<?= $router->url("contact.create") ?>" class="btn btn-success">Ajouter</a></p>
+    <?php if ($flash->get('success')) : ?>
+        <div class="alert-success"><?= $flash->get('success') ?></div>
+    <?php endif ?>
     <?php if (empty($contacts)) : ?>
         <div class="alert-danger">
             <p>Vous n'avez aucun contact.</p>
@@ -24,7 +27,7 @@
                         <td><?= $contact->email ?></td>
                         <td><?= $contact->numberPhone ?></td>
                         <td>
-                            <a href="<?= $router->url('contactShow', ['id' => $contact->id]) ?>" class="btn btn-blue">Voir plus</a>
+                            <a href="<?= $router->url('contact.show', ['id' => $contact->id]) ?>" class="btn btn-blue">Voir plus</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

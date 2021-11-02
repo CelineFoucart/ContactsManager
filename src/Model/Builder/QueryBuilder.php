@@ -172,12 +172,15 @@ class QueryBuilder
      * @param string|null $field
      * @return string
      */
-    public function count(?string $field = null): string
+    public function count(?string $field = null, ?string $alias = null): string
     {
         if ($field === null) {
             $this->sql = 'SELECT COUNT(*)';
         } else {
             $this->sql = "SELECT COUNT({$field})";
+            if($alias !== null) {
+                $this->sql .= " AS $alias";
+            }
         }        
         $this->getTable();
         $this->getConditions();

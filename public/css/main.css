@@ -309,8 +309,79 @@ td.actions .btn {
     margin: 0;
 }
 
-.footer_links a {
+.footer_links a, .admin_panel {
     color: inherit;
+}
+
+.admin_panel {
+    margin-top: 10px;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+/* ADMINISTRATION
+---------------------------------------- */
+.admin_main {
+	border-radius: 8px;
+	padding: 20px;
+	border: 1px solid #dee2e6;
+	background-color: #f8f9fa;
+    margin-bottom: 10px;
+}
+
+.edit-title {
+	font-size: 1.75rem;
+	margin-top: 5px;
+	color: rgb(42,95,156);
+}
+
+.admin_main_nav {
+	background-color: rgb(42,95,156);
+	color: #fff;
+	padding: 15px 0;
+}
+
+.admin_main_nav_list {
+	padding: 0;
+	margin: 0;
+}
+
+.admin_main_nav_list .main {
+	font-size: 1.1rem;
+}
+
+.admin_main_nav_list li {
+	list-style: none;
+	display: inline-block;
+	padding-right: 15px;
+}
+
+.admin_main_nav a {
+	color: rgba(255, 255, 255, 0.6);
+	text-decoration: none;
+	transition: all 0.3s;
+}
+
+.admin_main_nav a:hover, .admin_main_nav .active, .admin_main_nav_list .main a {
+	color: rgb(255, 255, 255);	
+}
+
+.admin_header_title {
+	color: rgb(42,95,156);
+	padding: 10px 0 30px;
+	text-align: right;
+}
+
+.admin_header_title > * {
+	margin: 0;
+}
+
+.admin_header_title h1 {
+	font-size: 2rem;
+}
+
+.admin_header_title a {
+	color: inherit;
 }
 
 /* RESPONSIVE

@@ -1,6 +1,6 @@
 <article class="main_wrapper">
     <h2 class="home_title">Bienvenue sur votre profil !</h2>
-    <p class="text-right"><a href="<?= $router->url("contactList") ?>" class="btn btn-success">Mes contacts</a></p>
+    <p class="text-right"><a href="<?= $router->url("contact.index") ?>" class="btn btn-success">Mes contacts</a></p>
     <?php if ($flash->get('success')) : ?>
         <div class="alert-success"><?= $flash->get('success') ?></div>
     <?php endif ?>
