@@ -44,7 +44,7 @@ class ModelFactory {
 	{
 		$pdo = $this->createPDO();
         $tableName = ucfirst($tableName);
-        $className = "Core\Model\Manager\\" . $tableName . "Manager";
+        $className = "App\Model\Manager\\" . $tableName . "Manager";
 		return new $className($pdo);
 	}
 

@@ -91,4 +91,21 @@ class RouterTest extends TestCase
         $post = $this->router->url("post", ['id'=>3, 'slug'=>'lorem-ipsum']);
         $this->assertEquals('/demo/posts/lorem-ipsum-3', $post);
     }
+
+    public function testGetWithInjection()
+    {
+        $this->expectException(RouterException::class);
+        $this->router->match('/demo/[i:id]', "Demo#index", "integer");
+        $request = new ServerRequest('GET', "/demo/1'%20or%20'1'%20=%20'1'");
+        $response = $this->router->run($request);
+    }
+
+    public function testGetValidWithParams()
+    {
+        $this->router->get('/demo', "Demo#index", "demo");
+        $body = (new DemoController())->index();
+        $request = new ServerRequest('GET', '/demo?page=2');
+        $response = $this->router->run($request);
+        $this->assertEquals($body, $response);
+    }
 }

@@ -111,13 +111,19 @@ class Validator
      * 
      * @return self
      */
-    public function unique(string $key, string $column, Manager $manager): self
+    public function unique(string $key, string $column, Manager $manager, ?int $id = null): self
     {
         if (!$this->exist($key)) {
             $this->errors[$key][] = "Ce champ n'existe pas !";
             return $this;
         }
-        $count = $manager->count("$column = ?", [$this->data[$key]]);
+        $where = "$column = ?";
+        $params = [$this->data[$key]];
+        if($id !== null) {
+            $where .= " AND id != ?";
+            $params[] = $id;
+        }
+        $count = $manager->count($where, $params);
         if($count !== 0) {
             $this->errors[$key][] = "Ce champ doit être unique";
         }

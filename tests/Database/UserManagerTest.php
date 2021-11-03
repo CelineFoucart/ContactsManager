@@ -18,6 +18,13 @@ class UserManagerTest extends DatabaseTestCase
         $this->assertEquals("Admin", $user->getUsername());
     }
 
+    public function testFindWithInjection()
+    {
+        $manager = $this->makeManager();
+        $user = $manager->find("id = ?", ["2 OR id = 1"], true);
+        $this->assertNull($user);
+    }
+
     public function testFind()
     {
         $manager = $this->makeManager();

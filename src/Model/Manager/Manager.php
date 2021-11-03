@@ -63,7 +63,7 @@ class Manager
         if($where !== null) {
             $sql->where($where);
             $sql = $sql->toSQL();
-            return $this->find($sql, $params);
+            return $this->makeBuilder()->fetchAll($sql, $params);
         } else {
             $sql = $sql->toSQL();
             return $this->findAll($sql);
@@ -166,7 +166,6 @@ class Manager
             return "{$this->prefix}$field";
         }, $fields));
         $sql = "INSERT INTO " . $this->table . "($fields) VALUES ($values)";
-
         return $this->makeBuilder()->alter($sql, $params);
     }
 

@@ -13,6 +13,7 @@ use App\Session\FlashService;
 use App\Session\SessionFactory;
 use App\Tools\Csrf\CsrfManager;
 use App\Tools\Form;
+use Exception;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -38,7 +39,7 @@ abstract class CrudController extends Controller
 
     public function index(ServerRequestInterface $request): Response
     {
-        [$items, $pagination] = Paginator::getPaginatedItems($request, $this->manager, "admin.users");
+        [$items, $pagination] = Paginator::getPaginatedItems($request, $this->manager, $this->router->url($this->urlPrefix));
         $title = "Administration des membres";
         $flash = $this->flash;
         return new Response(200, [], $this->render('index', compact('items', 'title', "pagination", 'flash')));
@@ -53,7 +54,33 @@ abstract class CrudController extends Controller
      */
     public function edit(ServerRequestInterface $request): Response
     {
-        return $this->alter($request, true);
+        $result = $this->alter($request, true);
+        if($result instanceof Response) {
+            return $result;
+        } elseif(is_array($result)) {
+            return new Response(200, [], $this->render('edit', $result));
+        } else {
+            throw new Exception("Invalid return of method alter");
+        }
+    }
+
+    /**
+     * Create an item
+     * 
+     * @param ServerRequestInterface $request
+     * 
+     * @return Response
+     */
+    public function create(ServerRequestInterface $request): Response
+    {
+        $result = $this->alter($request, false);
+        if ($result instanceof Response) {
+            return $result;
+        } elseif (is_array($result)) {
+            return new Response(200, [], $this->render('create', $result));
+        } else {
+            throw new Exception("Invalid return of method alter");
+        }
     }
 
     /**
@@ -71,7 +98,7 @@ abstract class CrudController extends Controller
             $this->csrf->process($request);
             if ($this->manager->delete($item->getId())) {
                 $this->flash->success("L'élément a bien été supprimé.");
-                return new RedirectResponse($this->router->url($this->urlPrefix . ".index"));
+                return new RedirectResponse($this->router->url($this->urlPrefix));
             } else {
                 $this->flash->error("La suppression a échoué");
             }
@@ -87,9 +114,9 @@ abstract class CrudController extends Controller
      * @param ServerRequestInterface $request
      * @param bool $update
      * 
-     * @return Response
+     * @return Response|array
      */
-    protected function alter(ServerRequestInterface $request, bool $update = true, string $redirect = "edit"): Response
+    protected function alter(ServerRequestInterface $request, bool $update = true, string $redirect = "edit")
     {
         $id = $request->getAttribute('id', null);
         $item = $this->getItem($id);
@@ -97,14 +124,14 @@ abstract class CrudController extends Controller
         if ($request->getMethod() === 'POST') {
             $this->csrf->process($request);
             $data = $request->getParsedBody();
-            $errors = $this->validate($data);
+            $errors = $this->validate($data, $id);
             if (empty($errors)) {
                 $this->flash->success("La mise à bien fonctionné.");
+                $data = $this->hydrateDataForAlter($data, $item);
                 if ($update) {
-                    $data['id'] = $item->getId();
-                    $this->manager->update($data);
+                    $this->manager->update($data, ['id', '_csrf', 'confirm']);
                 } else {
-                    $id = $this->manager->insert($data);
+                    $id = $this->manager->insert($data, ['_csrf', 'confirm']);
                     return new RedirectResponse($this->router->url($this->urlPrefix . "." . $redirect, ['id' => $id]));
                 }                
             } else {
@@ -113,13 +140,21 @@ abstract class CrudController extends Controller
             $item = Hydrator::hydrate($item, $data);
         }
         $title = ($this->prefixTitle === null) ? "Page d'édition" : $this->prefixTitle . " | Page d'édition";
-        $params = [
+        return [
             'flash' => $this->flash, 
             'token' => $this->csrf->generateToken(), 
             'form' => new Form($errors, $item),
             'title' => $title
         ];
-        return new Response(200, [], $this->render('edit', $params));
+    }
+
+    protected function hydrateDataForAlter(array $data, $item): array
+    {
+        $id = $item->getId();
+        if ($id !== null) {
+            $data['id'] = $item->getId();
+        }
+        return $data;
     }
 
     /**
@@ -145,5 +180,5 @@ abstract class CrudController extends Controller
     */
     protected abstract function getManager();
 
-    protected abstract function validate(array $data = []): array;
+    protected abstract function validate(array $data = [], ?int $id = null): array;
 }

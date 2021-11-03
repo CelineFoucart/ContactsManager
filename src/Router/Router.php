@@ -59,7 +59,12 @@ class Router
         return $this;
     }
 
-    public function run(ServerRequestInterface $request): string
+    /**
+     * @param ServerRequestInterface $request
+     * 
+     * @return string|Response
+     */
+    public function run(ServerRequestInterface $request)
     {
         $match = $this->router->match($request->getUri()->getPath());
         $router = $this;

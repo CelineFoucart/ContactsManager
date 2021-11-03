@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\App;
 use App\Controllers\Helpers\Paginator;
 use App\Controllers\Helpers\UserHelper;
+use App\Controllers\Helpers\ValidatorHelper;
 use App\Entity\ContactEntity;
 use App\Entity\Hydrator;
 use App\Exceptions\NotFoundException;
@@ -26,10 +27,14 @@ class ContactController extends CrudController
     protected string $viewPath = "../views/contact/";
     protected FlashService $flash;
     protected Auth $auth;
-    protected ContactManager $manager;
+    /**
+     * @var ContactManager
+     */
+    protected $manager;
     protected CsrfManager $csrf;
     protected ?string $prefixTitle = "Contacts";
     protected string $className = ContactEntity::class;
+    protected ?string $urlPrefix = 'contact';
 
     public function __construct(Router $router)
     {
@@ -86,6 +91,13 @@ class ContactController extends CrudController
         return $this->alter($request, false, "show");
     }
 
+    protected function hydrateDataForAlter(array $data, $item): array
+    {
+        $data = parent::hydrateDataForAlter($data, $item);
+        $data['user_id'] = $this->auth->getUserId();
+        return $data;
+    }
+
     /**
      * Return a contact by id
      * 
@@ -99,24 +111,16 @@ class ContactController extends CrudController
             return new ContactEntity();
         }
         $userId = (int)$this->auth->getUserId();
-        $item = $this->manager->find("user_id = :user AND id = :id", ['user' => $userId, 'id' => $id], true);
+        $item = $this->manager->find("user_id = :user AND c.id = :id", ['user' => $userId, 'id' => $id], true);
         if ($item === null) {
             throw new NotFoundException("Ce contact n'existe pas !");
         }
         return $item;
     }
 
-    protected function validate(array $data = []): array
+    protected function validate(array $data = [], ?int $id = null): array
     {
-        $validator = new Validator($data);
-        $validator->required("firstname", "lastname", "email", "number_phone")
-            ->required("address", "city", "country")
-            ->length("firstname", 3)
-            ->length("lastname", 3)
-            ->length("address", 10)
-            ->length("city", 2)
-            ->length("country", 2)
-            ->email("email");
+        $validator = ValidatorHelper::getValidatorForContact($data);
         return $validator->getErrors();
     }
 

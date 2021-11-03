@@ -1,5 +1,4 @@
 <article class="main_wrapper">
-    <!-- insérer une image ici -->
     <h2 class="home_title"><?= WEBSITE_LEGEND ?></h2>
     <div class="card-group">
         <div class="card">

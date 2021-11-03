@@ -10,7 +10,7 @@
     <?php endif ?>
 
     <form action="" method="post">
-        <?= $form->input("name", "Votre nom", ['placeholder' => 'Votre nom']) ?>
+        <?= $form->input("username", "Votre nom", ['placeholder' => 'Votre nom']) ?>
         <?= $form->input("password", "Votre mot de passe", ['placeholder' => 'Votre mot de passe', 'type' => 'password']) ?>
         <input type="submit" value="Envoyer" class="btn-orange">
     </form>

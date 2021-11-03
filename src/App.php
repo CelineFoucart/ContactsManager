@@ -55,9 +55,9 @@ class App
             return new RedirectResponse($this->router->url("login"));
         } catch(CsrfInvalidException $error) {
             return new Response(404, [], $error->getMessage());
-        } catch(\Exception $error) {
+        } /* catch(\Exception $error) {
             return new Response(404, [], $error->getMessage());
-        }
+        } */
     }
 
     /**

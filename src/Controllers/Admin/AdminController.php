@@ -37,11 +37,11 @@ class AdminController extends CrudController
     public function dashboard(ServerRequestInterface $request): Response
     {
         $title = "Administration | Général";
-        $stats = $this->manager->getStats();
-        return new Response(200, [], $this->render("dashboard", compact('title', 'Stats')));
+        $cards = $this->manager->getStats();
+        return new Response(200, [], $this->render("dashboard", compact('title', 'cards')));
     }
 
-    protected function validate(array $data = []): array
+    protected function validate(array $data = [], ?int $id = null): array
     {
         return [];
     }

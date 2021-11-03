@@ -12,6 +12,7 @@ class UserCrudAction extends CrudAction
         $errors = $this->validator->getErrors();
         if(empty($errors)) {
             $user = $this->manager->find("username = ?", [htmlspecialchars($data['username'])], true);
+            
             if($user !== null) {
                 if(password_verify($data['password'], $user->getPassword())) {
                     return (int)$user->getId();

@@ -198,6 +198,19 @@ a:hover {
     line-height: 1.8;
 }
 
+.profil__block-desk {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.contact_info {
+    list-style: none;
+}
+
+.contact_info li {
+    margin-bottom: 5px;
+}
+
 .btn-orange {
     color: white;
     background-color: #ff7a00;
@@ -309,7 +322,7 @@ td.actions .btn {
     margin: 0;
 }
 
-.footer_links a, .admin_panel {
+.footer_links a, .admin_panel a {
     color: inherit;
 }
 
@@ -317,6 +330,7 @@ td.actions .btn {
     margin-top: 10px;
     text-decoration: underline;
     font-weight: bold;
+    display: block;
 }
 
 /* ADMINISTRATION
@@ -329,10 +343,20 @@ td.actions .btn {
     margin-bottom: 10px;
 }
 
-.edit-title {
-	font-size: 1.75rem;
+.admin-title {
+    text-align: center;
+	font-size: 2.25rem;
 	margin-top: 5px;
-	color: rgb(42,95,156);
+	color: #0085a1;
+}
+
+.admin-title::after {
+    content: ' ';
+    display: block;
+    max-width: 350px;
+    height: 3px;
+    background-color: #0085a1;
+    margin: 20px auto 5px;
 }
 
 .admin_main_nav {
@@ -384,6 +408,12 @@ td.actions .btn {
 	color: inherit;
 }
 
+.admin_nav_tools {
+	float: right;
+	padding-left: 5px;
+    padding-top: 10px;
+}
+
 /* RESPONSIVE
 ---------------------------------------- */
 @media (min-width: 340px) {
@@ -432,6 +462,6 @@ td.actions .btn {
 
     .main_wrapper {
         max-width: 1180px;
-        margin: 0 auto;
+        margin: 0 auto 5px;
     }
 }

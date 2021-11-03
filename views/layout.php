@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="<?= HOME_PATH ?>/public/css/main.css">
     <meta name="description" content="<?= SEO_DESCRIPTION ?>">
     <title><?= $title ?? WEBSITE_NAME ?></title>
 </head>
@@ -16,8 +16,13 @@
                 <div class="header_wrapper">
                     <div class="header_brand"><a href="<?= $router->url("home") ?>"><?= WEBSITE_NAME ?></a></div>
                     <ul class="header_navigation_list">
-                        <li class="header_navigation_list_item"><a href="<?= $router->url("login") ?>">Se connecter</a></li>
-                        <li class="header_navigation_list_item"><a href="<?= $router->url("register") ?>">S'inscrire</a></li>
+                        <?php if (App\Session\SessionFactory::getAuth()->logged()) : ?>
+                            <li class="header_navigation_list_item"><a href="<?= $router->url("profil") ?>">Profil</a></li>
+                            <li class="header_navigation_list_item"><a href="<?= $router->url("logout") ?>">Se déconnecter</a></li>
+                        <?php else : ?>
+                            <li class="header_navigation_list_item"><a href="<?= $router->url("login") ?>">Se connecter</a></li>
+                            <li class="header_navigation_list_item"><a href="<?= $router->url("register") ?>">S'inscrire</a></li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </nav>

@@ -30,7 +30,7 @@ class UserController extends Controller
         $this->flash = SessionFactory::getFlash();
         $this->auth = SessionFactory::getAuth();
         $this->manager = ModelFactory::getInstance(App::getDbConfigs())->getManager('User');
-        $this->adminManager = ModelFactory::getInstance(App::getDbConfigs())->getTable('Admin');
+        $this->adminManager = ModelFactory::getInstance(App::getDbConfigs())->getManager('Admin');
         parent::__construct($router);
     }
 
@@ -44,7 +44,7 @@ class UserController extends Controller
         $errors = [];
         if($request->getMethod() === 'POST') {
             $data = $request->getParsedBody();
-            $crud = new UserCrudAction($this->manager, $this->flash, $this->validator);
+            $crud = new UserCrudAction($this->manager, $this->flash, new Validator($data));
             $id = $crud->login($data);
             if($id !== null) {
                 $admin = $this->adminManager->isAdmin($id);
@@ -116,12 +116,16 @@ class UserController extends Controller
             $validator = new Validator($data);
             $errors = UserHelper::edit($data, $validator, $this->manager);
             if(empty($errors)) {
-                $this->flash->success("Le profil a été mis è jour");
+                $this->flash->success("Le profil a été mis à jour");
+                if(isset($data['email'])) {
+                    $user->setEmail($data['email']);
+                }
             } else {
                 $this->flash->error("La mise à jour à échoué");
             }
         }
         $form = new Form($errors, ['email' => $user->getEmail()]);
-        return $this->render('profil', ['title' => WEBSITE_NAME . " | Profil", 'user' => $user, 'form' => $form]);
+        $params = ['title' => WEBSITE_NAME . " | Profil", 'user' => $user, 'form' => $form, 'flash' => $this->flash];
+        return $this->render('profil', $params);
     }
 }

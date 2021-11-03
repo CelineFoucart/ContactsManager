@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="<?= HOME_PATH ?>/public/css/main.css">
     <meta name="description" content="<?= SEO_DESCRIPTION ?>">
     <title><?= $title ?? WEBSITE_NAME ?></title>
 </head>
 
 <body>
     <nav class="admin_main_nav">
-        <div class="container">
+        <div class="main_wrapper">
             <ul class="admin_main_nav_list">
                 <li class="main"><a href="<?= $router->url("admin.index") ?>">Administration</a></li>
                 <li><a href="<?= $router->url("admin.users") ?>">Utilisateurs</a></li>
@@ -19,7 +19,7 @@
             </ul>
         </div>
     </nav>
-    <main class="container">
+    <main class="main_wrapper">
         <header class="admin_header">
             <div class="admin_header_title">
                 <h1>Panneau d'administration</h1>

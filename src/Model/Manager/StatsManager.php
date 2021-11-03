@@ -9,7 +9,7 @@ final class StatsManager extends Manager
     public function getStats(): array
     {
         $sql = $this->getQuery();
-        return $this->makeBuilder()->fetch($sql, [], 'array');
+        return $this->makeBuilder()->fetchAll($sql, [], 'array');
     }
 
     private function getQuery(): string

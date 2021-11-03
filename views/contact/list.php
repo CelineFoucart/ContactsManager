@@ -1,6 +1,6 @@
 <article class="main_wrapper">
     <h2 class="home_title">Liste de vos contacts</h2>
-    <p class="text-right"><a href="<?= $router->url("contact.create") ?>" class="btn btn-success">Ajouter</a></p>
+    <p class="text-center"><a href="<?= $router->url("contact.create") ?>" class="btn btn-success">Ajouter</a></p>
     <?php if ($flash->get('success')) : ?>
         <div class="alert-success"><?= $flash->get('success') ?></div>
     <?php endif ?>
@@ -34,11 +34,10 @@
             </tbody>
         </table>
     <?php endif; ?>
-    <!-- pagination ici -->
     <nav class="paging-block">
         <div class="pagination">
             <?= $pagination['previous'] ?>
-            <?= $pagination['pagination'] ?>
+            <?= join(" ", $pagination['pages']) ?>
             <?= $pagination['next'] ?>
         </div>
     </nav>

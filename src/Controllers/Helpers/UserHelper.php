@@ -46,6 +46,7 @@ class UserHelper
             $validator->email('email');
         } elseif (!empty($data['password'])) {
             $validator->password('password')->confirmPassword('password', 'confirm');
+            $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         }
         $errors = $validator->getErrors();
         if(empty($errors)) {

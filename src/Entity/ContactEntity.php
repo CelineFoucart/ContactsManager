@@ -12,6 +12,7 @@ class ContactEntity extends Entity
     private ?string $city = null;
     private ?string $country = null;
     private ?int $userId = null;
+    private ?string $username = null;
 
     /**
      * Get the value of email
@@ -169,6 +170,26 @@ class ContactEntity extends Entity
     public function setUserId(int $userId): self
     {
         $this->userId = $userId;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of username
+     */ 
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    /**
+     * Set the value of username
+     *
+     * @return  self
+     */ 
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
 
         return $this;
     }
