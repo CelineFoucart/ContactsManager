@@ -35,11 +35,8 @@ class AdminContactController extends AdminController
      * 
      * @return UserEntity|ContactEntity|Entity
      */
-    protected function getItem(?int $id = null)
+    protected function getItem(int $id)
     {
-        if ($id === null) {
-            return new ContactEntity();
-        }
         $item = $this->manager->find("c.id = :id", ['id' => $id], true);
         if ($item === null) {
             throw new NotFoundException("Cet élément n'existe pas !");

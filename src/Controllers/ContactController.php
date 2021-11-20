@@ -79,37 +79,27 @@ class ContactController extends CrudController
         return new Response(200, [], $this->render('show', compact('contact', 'title', 'flash')));
     }
 
-    /**
-     * Create a contact
-     * 
-     * @param ServerRequestInterface $request
-     * 
-     * @return Response
-     */
-    public function create(ServerRequestInterface $request): Response
+    protected function hydrateDataAfterUpdate(array $data, $item): array
     {
-        return $this->alter($request, false, "show");
-    }
-
-    protected function hydrateDataForAlter(array $data, $item): array
-    {
-        $data = parent::hydrateDataForAlter($data, $item);
+        $data = parent::hydrateDataAfterUpdate($data, $item);
         $data['user_id'] = $this->auth->getUserId();
         return $data;
+    }
+
+    protected function makeRedirectAfterCreate(int $id): RedirectResponse
+    {
+        return new RedirectResponse($this->router->url($this->urlPrefix . ".show", ['id' => $id]));
     }
 
     /**
      * Return a contact by id
      * 
-     * @param ServerRequestInterface $request
+     * @param int $id
      * 
      * @return ContactEntity
      */
-    protected function getItem(?int $id = null): ContactEntity
+    protected function getItem(int $id): ContactEntity
     {
-        if ($id === null) {
-            return new ContactEntity();
-        }
         $userId = (int)$this->auth->getUserId();
         $item = $this->manager->find("user_id = :user AND c.id = :id", ['user' => $userId, 'id' => $id], true);
         if ($item === null) {

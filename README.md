@@ -1,2 +1,2 @@
 # ContactsManager
-A contacts manager
+ContactManager système de gestion des contacts.

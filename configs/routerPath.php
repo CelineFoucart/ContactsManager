@@ -1,6 +1,6 @@
 <?php 
 
-define('HOME_PATH', '/ContactsManager/');
+define('HOME_PATH', '/');
 
 return [
     ['get',  HOME_PATH, 'Public#index', 'home'],

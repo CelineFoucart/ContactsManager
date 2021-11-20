@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Router\Router;
+use Psr\Http\Message\ServerRequestInterface;
 
 abstract class Controller
 {
@@ -31,5 +32,10 @@ abstract class Controller
         require $this->template . '.php';
         $page = ob_get_clean();
         return $page;
+    }
+
+    protected function isPostMethod(ServerRequestInterface $request): bool
+    {
+        return $request->getMethod() === 'POST';
     }
 }

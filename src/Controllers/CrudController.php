@@ -28,6 +28,7 @@ abstract class CrudController extends Controller
     protected CsrfManager $csrf;
     protected ?string $prefixTitle = null;
     protected string $className;
+    protected array $exceptionForPersist = ['id', '_csrf', 'confirm'];
 
     public function __construct(Router $router)
     {
@@ -54,14 +55,21 @@ abstract class CrudController extends Controller
      */
     public function edit(ServerRequestInterface $request): Response
     {
-        $result = $this->alter($request, true);
-        if($result instanceof Response) {
-            return $result;
-        } elseif(is_array($result)) {
-            return new Response(200, [], $this->render('edit', $result));
+        $item = $this->getItem((int)$request->getAttribute('id'));
+        if($this->isPostMethod($request)) {
+            $data = $request->getParsedBody();
+            $errors = $this->makeValidationAndFlash($data, $item->getId());
+            if(empty($errors)) {
+                $data = $this->hydrateDataAfterUpdate($data, $item);
+                $this->manager->update($data, $this->exceptionForPersist);
+            }
+            $item = Hydrator::hydrate($item, $data);
+            $form = new Form($errors, $item);
         } else {
-            throw new Exception("Invalid return of method alter");
+            $form = new Form();
         }
+        $title = $this->generatePrefixedTitle("Page d'édition");
+        return $this->makeResponseAfterAlterData($form, $title);
     }
 
     /**
@@ -73,14 +81,19 @@ abstract class CrudController extends Controller
      */
     public function create(ServerRequestInterface $request): Response
     {
-        $result = $this->alter($request, false);
-        if ($result instanceof Response) {
-            return $result;
-        } elseif (is_array($result)) {
-            return new Response(200, [], $this->render('create', $result));
+        if($this->isPostMethod($request)) {
+            $data = $request->getParsedBody();
+            $errors = $this->makeValidationAndFlash($data);
+            if (empty($errors)) {
+                $id = $this->manager->insert($data, $this->exceptionForPersist);
+                return $this->makeRedirectAfterCreate($id);
+            }
+            $form = new Form($errors, $data);
         } else {
-            throw new Exception("Invalid return of method alter");
+            $form = new Form();
         }
+        $title = $this->generatePrefixedTitle("Page de création");
+        return $this->makeResponseAfterAlterData($form, $title);
     }
 
     /**
@@ -93,7 +106,7 @@ abstract class CrudController extends Controller
     public function delete(ServerRequestInterface $request): Response
     {
         $item = $this->getItem((int)$request->getAttribute('id'));
-        $title = ($this->prefixTitle === null) ? "Supprimer" : "{$this->prefixTitle} | Supprimer";
+        $title = $this->generatePrefixedTitle('Supprimer');
         if ($request->getMethod() === 'POST') {
             $this->csrf->process($request);
             if ($this->manager->delete($item->getId())) {
@@ -108,71 +121,52 @@ abstract class CrudController extends Controller
         return new Response(200, [], $this->render('delete', compact('item', 'title', 'token', 'flash')));
     }
 
-    /**
-     * Make an update or an insert of an item
-     * 
-     * @param ServerRequestInterface $request
-     * @param bool $update
-     * 
-     * @return Response|array
-     */
-    protected function alter(ServerRequestInterface $request, bool $update = true, string $redirect = "edit")
+    protected function makeValidationAndFlash(array $data, ?int $id = null): array
     {
-        $id = $request->getAttribute('id', null);
-        $item = $this->getItem($id);
-        $errors = [];
-        if ($request->getMethod() === 'POST') {
-            $this->csrf->process($request);
-            $data = $request->getParsedBody();
-            $errors = $this->validate($data, $id);
-            if (empty($errors)) {
-                $this->flash->success("La mise à bien fonctionné.");
-                $data = $this->hydrateDataForAlter($data, $item);
-                if ($update) {
-                    $this->manager->update($data, ['id', '_csrf', 'confirm']);
-                } else {
-                    $id = $this->manager->insert($data, ['_csrf', 'confirm']);
-                    return new RedirectResponse($this->router->url($this->urlPrefix . "." . $redirect, ['id' => $id]));
-                }                
-            } else {
-                $this->flash->error("Il y a eu une erreur");
-            }
-            $item = Hydrator::hydrate($item, $data);
+        $errors = $this->validate($data, $id); 
+        if(empty($errors)) {
+            $this->flash->success("La mise à bien fonctionné.");
+        } else {
+            $this->flash->error("Il y a eu une erreur");
         }
-        $title = ($this->prefixTitle === null) ? "Page d'édition" : $this->prefixTitle . " | Page d'édition";
-        return [
-            'flash' => $this->flash, 
-            'token' => $this->csrf->generateToken(), 
-            'form' => new Form($errors, $item),
-            'title' => $title
-        ];
+        return $errors;
     }
 
-    protected function hydrateDataForAlter(array $data, $item): array
+    protected function makeRedirectAfterCreate(int $id): RedirectResponse
     {
-        $id = $item->getId();
-        if ($id !== null) {
-            $data['id'] = $item->getId();
-        }
+        return new RedirectResponse($this->router->url($this->urlPrefix . ".edit", ['id' => $id]));
+    }
+
+    protected function generatePrefixedTitle(string $title): string
+    {
+        return ($this->prefixTitle === null) ? $title : "{$this->prefixTitle} | {$title}";
+    }
+
+    protected function hydrateDataAfterUpdate(array $data, $item): array
+    {
+        $data['id'] = $item->getId();
         return $data;
     }
 
     /**
-     * @param int|null $id
+     * @param int $id
      * 
      * @return UserEntity|ContactEntity|Entity
      */
-    protected function getItem(?int $id = null)
+    protected function getItem(int $id)
     {
-        if($id === null) {
-            $className = $this->className;
-            return new $className();
-        }
         $item = $this->manager->find("id = :id", ['id' => $id], true);
         if ($item === null) {
             throw new NotFoundException("Cet élément n'existe pas !");
         }
         return $item;
+    }
+
+    protected function makeResponseAfterAlterData(Form $form, string $title)
+    {
+        $token = $this->csrf->generateToken();
+        $flash = $this->flash;
+        return new Response(200, [], $this->render('edit', compact('form', 'token', 'title', 'flash')));
     }
 
     /**

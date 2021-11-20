@@ -27,7 +27,7 @@ class Form {
 
     private array $toolbars = [];
 
-    public function __construct(array $errors, $data = null, array $toolbars = [])
+    public function __construct(array $errors = [], $data = null, array $toolbars = [])
     {
         if ($data !== null) {
             $this->data = $data;
